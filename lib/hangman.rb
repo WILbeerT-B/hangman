@@ -52,11 +52,7 @@ class Hangman
     end
   end
 
-  def player_input
-    puts
-    puts
-    print "Enter a letter: "
-    input = gets.chomp
+  def get_index(input)
     idx = secret_code.index(input)
     if secret_code.count(input) == 0
       @count += 1
@@ -73,16 +69,44 @@ class Hangman
         board.update_board(all_index[i], input)
       end
     end
-    puts 
-    board.display_board
+  end
+
+  def you_guess_it_right
+    board.code.join == secret_code
+  end
+
+  def game_over
+    not_match.length == 7
+  end
+
+  def is_input_valid?(letter)
+    !(match.include?(letter) || not_match.include?(letter))
+  end
+
+  def player_input
     puts
-    puts "Not match: #{not_match}"
-    puts "Match: #{match}"
-    puts "Board code: #{board.code.join}"
-    puts "Game over! You did not guess the secret code '#{secret_code}'." if not_match.length == 7
-    if board.code.join == secret_code
-      @count = 7
-      puts "You guess it right!"
+    puts
+    print "Enter a letter: "
+    input = gets.chomp
+    if is_input_valid?(input)
+      get_index(input)
+      puts 
+      board.display_board
+      puts
+      puts "Not match: #{not_match}"
+      puts "Match: #{match}"
+      puts "Board code: #{board.code.join}"
+
+      if you_guess_it_right
+        @count = 7
+        puts "You guess it right!"
+      end
+
+      if game_over
+        puts "Game over! You did not guess the secret code '#{secret_code}'."
+      end
+    else
+      puts "'#{input}' is already guessed!"
     end
     puts @count
   end
