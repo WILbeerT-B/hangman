@@ -7,7 +7,6 @@ class Board
 
   def display_board
     code.each { |c| print c, ' '}
-    #code.join.each_char { |c| print c, ' '} 
   end
 
   def update_board(index, input)
@@ -33,9 +32,6 @@ class Hangman
       my_lines.push(lines[i].chomp)
     end
     my_lines
-    #for line in lines do 
-      #my_lines.push(line.chomp)  
-    #end
   end
 
   def generate_code
@@ -44,8 +40,7 @@ class Hangman
 
   def play
     puts "Hangman"
-    p secret_code
-    puts secret_code.length
+    puts
     board.display_board
     while @count != 7 do
       player_input
@@ -79,8 +74,12 @@ class Hangman
     not_match.length == 7
   end
 
-  def is_input_valid?(letter)
+  def is_input_taken?(letter)
     !(match.include?(letter) || not_match.include?(letter))
+  end
+
+  def is_input_valid?(letter)
+    letter.length == 1 
   end
 
   def player_input
@@ -88,27 +87,32 @@ class Hangman
     puts
     print "Enter a letter: "
     input = gets.chomp
+    if input == input.upcase
+      input = input.downcase
+    end
     if is_input_valid?(input)
-      get_index(input)
-      puts 
-      board.display_board
-      puts
-      puts "Not match: #{not_match}"
-      puts "Match: #{match}"
-      puts "Board code: #{board.code.join}"
+      if is_input_taken?(input)
+        get_index(input)
+        puts 
+        board.display_board
+        puts
+        puts
+        puts "Not match: #{not_match}"
 
-      if you_guess_it_right
-        @count = 7
-        puts "You guess it right!"
-      end
+        if you_guess_it_right
+          @count = 7
+          puts "You guess it right!"
+        end
 
-      if game_over
-        puts "Game over! You did not guess the secret code '#{secret_code}'."
+        if game_over
+          puts "Game over! You did not guess the secret code '#{secret_code}'."
+        end
+      else
+        puts "'#{input}' is already guessed!"
       end
     else
-      puts "'#{input}' is already guessed!"
+      puts "Input is invalid! Please enter a letter."  
     end
-    puts @count
   end
 end
 
